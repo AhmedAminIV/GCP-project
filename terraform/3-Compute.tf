@@ -3,7 +3,7 @@ resource "google_compute_instance" "management-vm" {
   name         = "management-vm"
   zone         = "us-central1-a"
   machine_type = var.machine_type
-  tags = var.network_tags
+  tags         = var.network_tags
 
   boot_disk {
     initialize_params {
@@ -12,17 +12,33 @@ resource "google_compute_instance" "management-vm" {
   }
 
   network_interface {
-    network = google_compute_network.vpc.name
+    network    = google_compute_network.vpc.name
     subnetwork = google_compute_subnetwork.management-sb.name
   }
+  
+  depends_on = [
+    google_service_account_key.vm-sa-key,
+    google_artifact_registry_repository.my-repo,
+    google_container_cluster.my-cluster
+  ]
 
-  metadata_startup_script = "echo hi > /test.txt"
+  metadata = {
+    "service-account-key" = google_service_account_key.vm-sa-key.private_key
+  }
+
+  metadata_startup_script = file(var.startup_script)
 
   service_account {
     email  = google_service_account.vm-sa.email
     scopes = var.scopes
   }
 }
+
+# Enable K8S engine API
+resource "google_project_service" "k8s_engine" {
+  service = "container.googleapis.com"
+}
+
 
 # Cluster
 resource "google_container_cluster" "my-cluster" {
@@ -48,22 +64,27 @@ resource "google_container_cluster" "my-cluster" {
   workload_identity_config {
     workload_pool = "${var.project_id}.svc.id.goog"
   }
-  
+
   master_authorized_networks_config {
     cidr_blocks {
-        cidr_block = "10.0.2.0/24"
+      cidr_block = var.management_cidr
     }
   }
-  
+
   node_config {
     disk_size_gb = var.workers_disk
   }
 
   private_cluster_config {
     enable_private_nodes    = true
-    enable_private_endpoint = true
-    master_ipv4_cidr_block  = "172.16.0.0/28"
+    enable_private_endpoint = false
+    master_ipv4_cidr_block  = var.control_plane_cidr
   }
+
+  depends_on = [
+    google_project_service.k8s_engine,
+    google_project_service.project
+  ]
 
 }
 
@@ -79,10 +100,10 @@ resource "google_container_node_pool" "workers-pool" {
   }
 
   node_config {
-    preemptible  = false
-    machine_type = var.workers_machine_type
-    image_type   = var.workers_image
-    disk_size_gb = var.workers_disk
+    preemptible     = false
+    machine_type    = var.workers_machine_type
+    image_type      = var.workers_image
+    disk_size_gb    = var.workers_disk
     service_account = google_service_account.pool-sa.email
   }
 }

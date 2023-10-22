@@ -1,6 +1,7 @@
 # Enable Compute API
 resource "google_project_service" "compute" {
-  service = "compute.googleapis.com"
+  service                    = "compute.googleapis.com"
+  disable_dependent_services = true
 }
 
 # Enable container API for the GKE cluster
@@ -26,7 +27,7 @@ resource "google_compute_network" "vpc" {
 #subnets
 resource "google_compute_subnetwork" "workload-sb" {
   name                     = "workload"
-  ip_cidr_range            = "10.0.1.0/24"
+  ip_cidr_range            = var.workerload_cidr
   region                   = var.region[0]
   network                  = google_compute_network.vpc.id
   private_ip_google_access = true
@@ -35,7 +36,7 @@ resource "google_compute_subnetwork" "workload-sb" {
 
 resource "google_compute_subnetwork" "management-sb" {
   name                     = "management"
-  ip_cidr_range            = "10.0.0.0/24"
+  ip_cidr_range            = var.management_cidr
   region                   = var.region[1]
   network                  = google_compute_network.vpc.id
   private_ip_google_access = true
@@ -75,9 +76,9 @@ resource "google_compute_firewall" "allow_ssh" {
 
   allow {
     protocol = "tcp"
-    ports    = ["22"]
+    ports    = ["22","8888"]
   }
 
-  source_tags = ["management-vm"]
-  source_ranges = ["35.235.240.0/20"]   # modify it later
+  target_tags   = ["management-vm"]
+  source_ranges = ["35.235.240.0/20"] # IAP cidr range
 }
