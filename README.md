@@ -2,6 +2,7 @@
 
 ## Description
 This project sets up a fully functional Node.js application with MongoDB as the database on Google Cloud Platform (GCP). It deploys the application to a private GKE cluster, secures it, and exposes it via a load balancer. MongoDB is configured with one primary and two secondary instances using a StatefulSet.
+![Architecture](archticture.png)
 
 ## 🛠️ Installation
 Before deploying this app, make sure you have the following prerequisites:
