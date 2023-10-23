@@ -1,12 +1,9 @@
-Certainly, I've made some grammar and formatting improvements to your README.md. Here's the revised version:
-
-```markdown
-# Project Title: Simple Node.js App with MongoDB on GCP Cluster using Terraform and Kubernetes
+# 🚀 Simple Node.js App with MongoDB on GCP Cluster using Terraform and Kubernetes
 
 ## Description
 This project sets up a fully functional Node.js application with MongoDB as the database on Google Cloud Platform (GCP). It deploys the application to a private GKE cluster, secures it, and exposes it via a load balancer. MongoDB is configured with one primary and two secondary instances using a StatefulSet.
 
-## Installation
+## 🛠️ Installation
 Before deploying this app, make sure you have the following prerequisites:
 - Linux OS
 - Git installed
@@ -42,7 +39,7 @@ This process takes around 12 minutes for Terraform to provision the infrastructu
 
 5. Once Terraform has finished provisioning, you can execute the following commands to set up your GKE cluster and deploy the application.
 
-### Connecting to GKE Cluster and Deploying the App
+### 🌐 Connecting to GKE Cluster and Deploying the App
 ```bash
 # Get cluster credentials and set kubectl to use internal IP
 gcloud container clusters get-credentials <cluster name> --zone <any cluster zone> --project <your project name> --internal-ip
@@ -85,7 +82,7 @@ kubectl get svc -n frontend
 
 Copy the external IP and paste it in your browser or use `curl <external ip>`. If you see the output "Visits: 1," everything is working correctly.
 
-## Clean Up
+## 🧹 Clean Up
 To clean up and delete all resources:
 
 ```bash
@@ -108,4 +105,3 @@ While destroying, you'll need to delete the disks used by the databases from the
 For assistance or questions, please feel free to contact me via [LinkedIn](https://www.linkedin.com/in/ahmed-amin-samey/).
 
 Thanks for using this project!
-```
