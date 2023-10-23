@@ -5,7 +5,7 @@ sudo apt upgrade -y
 sudo apt install git -y
 
 # clone the app repo
-git clone https://github.com/Mostafa-Yehia/simple-node-app.git
+git clone https://github.com/AhmedAminIV/simple-node-app.git
 cd simple-node-app
 
 # Set docker repo
@@ -38,7 +38,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install app dependencies
-RUN npm i
+RUN npm install
 
 # Copy your application code into the container
 COPY . .
@@ -48,6 +48,8 @@ FROM gcr.io/distroless/nodejs:18
 COPY --from=build /app /app
 
 WORKDIR /app
+
+EXPOSE 3000
 
 # Start your Node.js application
 CMD ["index.js"]

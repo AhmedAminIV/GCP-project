@@ -19,7 +19,7 @@ resource "google_compute_instance" "management-vm" {
   depends_on = [
     google_service_account_key.vm-sa-key,
     google_artifact_registry_repository.my-repo,
-    google_container_cluster.my-cluster
+    google_container_cluster.my-cluster,
   ]
 
   metadata = {
@@ -83,7 +83,6 @@ resource "google_container_cluster" "my-cluster" {
 
   depends_on = [
     google_project_service.k8s_engine,
-    google_project_service.project
   ]
 
 }
