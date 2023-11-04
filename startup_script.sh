@@ -97,15 +97,5 @@ sudo docker tag bitnami/mongodb:4.4.4 us-central1-docker.pkg.dev/amin-final/proj
 # Push Docker Image to Artifact Registry
 sudo docker push us-central1-docker.pkg.dev/amin-final/project-repo/bitnami/mongodb:4.4.4
 
-# Install the kubernetes commandline client
-sudo apt-get install kubectl
-sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin
-
-# Get cluster credentials and set kubectl to use internal ip
-gcloud container clusters get-credentials cluster --zone us-east1-b --project amin-final --internal-ip
-
 # Enabling control plane private endpoint global access
 gcloud container clusters update cluster --zone us-east1-b  --enable-master-global-access
-
-#Install java jdk for jenkins
-sudo apt-get install default-jdk -y
